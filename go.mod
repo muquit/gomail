@@ -2,4 +2,6 @@ module github.com/muquit/gomail
 
 go 1.23.5
 
-require gopkg.in/alexcesaro/quotedprintable.v3 v3.0.0-20150716171945-2caba252f4dc
+toolchain go1.23.6
+
+require github.com/muquit/quotedprintable v0.0.0-20250204043250-71206103869d
