@@ -2,6 +2,8 @@ package gomail
 
 import (
 	"crypto/tls"
+	"encoding/base64"
+	"errors"
 	"fmt"
 	"io"
 	"net"
@@ -33,6 +35,8 @@ type Dialer struct {
 	// LocalName is the hostname sent to the SMTP server with the HELO command.
 	// By default, "localhost" is sent.
 	LocalName string
+	// OAuth2Token is the OAuth 2.0 bearer token to use for XOAUTH2 authentication
+	OAuth2Token string
 }
 
 // NewDialer returns a new SMTP Dialer. The given parameters are used to connect
@@ -44,6 +48,17 @@ func NewDialer(host string, port int, username, password string) *Dialer {
 		Username: username,
 		Password: password,
 		SSL:      port == 465,
+	}
+}
+
+// NewXOAuth2Dialer returns a new SMTP Dialer configured for XOAUTH2 authentication
+func NewXOAuth2Dialer(host string, port int, username, token string) *Dialer {
+	return &Dialer{
+		Host:        host,
+		Port:        port,
+		Username:    username,
+		OAuth2Token: token,
+		SSL:         port == 465,
 	}
 }
 
@@ -89,7 +104,9 @@ func (d *Dialer) Dial() (SendCloser, error) {
 
 	if d.Auth == nil && d.Username != "" {
 		if ok, auths := c.Extension("AUTH"); ok {
-			if strings.Contains(auths, "CRAM-MD5") {
+			if strings.Contains(auths, "XOAUTH2") && d.OAuth2Token != "" {
+				d.Auth = NewXOAuth2Auth(d.Username, d.OAuth2Token)
+			} else if strings.Contains(auths, "CRAM-MD5") {
 				d.Auth = smtp.CRAMMD5Auth(d.Username, d.Password)
 			} else if strings.Contains(auths, "LOGIN") &&
 				!strings.Contains(auths, "PLAIN") {
@@ -200,3 +217,32 @@ type smtpClient interface {
 	Quit() error
 	Close() error
 }
+
+// XOAuth2Auth implements smtp.Auth interface for XOAUTH2 authentication
+type XOAuth2Auth struct {
+	username string
+	token    string
+}
+
+// NewXOAuth2Auth creates a new XOAuth2Auth instance
+func NewXOAuth2Auth(username, token string) smtp.Auth {
+	return &XOAuth2Auth{
+		username: username,
+		token:    token,
+	}
+}
+
+// Start begins XOAUTH2 authentication by returning the appropriate command string
+func (a *XOAuth2Auth) Start(server *smtp.ServerInfo) (string, []byte, error) {
+	if !server.TLS {
+		return "", nil, errors.New("unencrypted connection")
+	}
+	auth := fmt.Sprintf("user=%s\x01auth=Bearer %s\x01\x01", a.username, a.token)
+	return "XOAUTH2", []byte(base64.StdEncoding.EncodeToString([]byte(auth))), nil
+}
+
+// Next handles the next step of XOAUTH2 authentication
+func (a *XOAuth2Auth) Next(fromServer []byte, more bool) ([]byte, error) {
+	return nil, nil
+}
+
