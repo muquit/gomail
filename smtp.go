@@ -2,7 +2,6 @@ package gomail
 
 import (
 	"crypto/tls"
-	"encoding/base64"
 	"errors"
 	"fmt"
 	"io"
@@ -241,12 +240,10 @@ func (a *XOAuth2Auth) Start(server *smtp.ServerInfo) (string, []byte, error) {
 	return "XOAUTH2", []byte(authString), nil
 }
 
-// Next handles the next step of XOAUTH2 authentication
+// simplify
 func (a *XOAuth2Auth) Next(fromServer []byte, more bool) ([]byte, error) {
 	if more {
-		// Google might send a JSON error response
-		decoded, _ := base64.StdEncoding.DecodeString(string(fromServer))
-		return nil, fmt.Errorf("authentication failed: %s", decoded)
+		return nil, fmt.Errorf("authentication failed: %s", fromServer)
 	}
 	return nil, nil
 }
