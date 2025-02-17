@@ -237,12 +237,16 @@ func (a *XOAuth2Auth) Start(server *smtp.ServerInfo) (string, []byte, error) {
 	if !server.TLS {
 		return "", nil, errors.New("unencrypted connection")
 	}
-	auth := fmt.Sprintf("user=%s\x01auth=Bearer %s\x01\x01", a.username, a.token)
-	return "XOAUTH2", []byte(base64.StdEncoding.EncodeToString([]byte(auth))), nil
+	authString := "user=" + a.username + "\x01" + "auth=Bearer " + a.token + "\x01\x01"
+	return "XOAUTH2", []byte(authString), nil
 }
 
 // Next handles the next step of XOAUTH2 authentication
 func (a *XOAuth2Auth) Next(fromServer []byte, more bool) ([]byte, error) {
+	if more {
+		// Google might send a JSON error response
+		decoded, _ := base64.StdEncoding.DecodeString(string(fromServer))
+		return nil, fmt.Errorf("authentication failed: %s", decoded)
+	}
 	return nil, nil
 }
-

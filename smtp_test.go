@@ -14,6 +14,7 @@ import (
 const (
 	testPort    = 587
 	testSSLPort = 465
+	testToken   = "test_oauth2_token"
 )
 
 var (
@@ -21,6 +22,7 @@ var (
 	testTLSConn = &tls.Conn{}
 	testConfig  = &tls.Config{InsecureSkipVerify: true}
 	testAuth    = smtp.PlainAuth("", testUser, testPwd, testHost)
+	testXOAuth2 = NewXOAuth2Auth(testUser, testToken)
 )
 
 func TestDialer(t *testing.T) {
@@ -288,5 +290,78 @@ func assertConfig(t *testing.T, got, want *tls.Config) {
 	}
 	if got.InsecureSkipVerify != want.InsecureSkipVerify {
 		t.Errorf("Invalid field InsecureSkipVerify in config, got %v, want %v", got.InsecureSkipVerify, want.InsecureSkipVerify)
+	}
+}
+
+func TestDialerXOAuth2(t *testing.T) {
+	d := NewXOAuth2Dialer(testHost, testPort, "user", testToken)
+	testSendMailXOAuth2(t, d, []string{
+		"Extension STARTTLS",
+		"StartTLS",
+		"Extension AUTH",
+		"Auth",
+		"Mail " + testFrom,
+		"Rcpt " + testTo1,
+		"Rcpt " + testTo2,
+		"Data",
+		"Write message",
+		"Close writer",
+		"Quit",
+		"Close",
+	})
+}
+
+func TestDialerSSLXOAuth2(t *testing.T) {
+	d := NewXOAuth2Dialer(testHost, testSSLPort, "user", testToken)
+	testSendMailXOAuth2(t, d, []string{
+		"Extension AUTH",
+		"Auth",
+		"Mail " + testFrom,
+		"Rcpt " + testTo1,
+		"Rcpt " + testTo2,
+		"Data",
+		"Write message",
+		"Close writer",
+		"Quit",
+		"Close",
+	})
+}
+
+func testSendMailXOAuth2(t *testing.T, d *Dialer, want []string) {
+	testClient := &mockClient{
+		t:      t,
+		want:   want,
+		addr:   addr(d.Host, d.Port),
+		config: d.TLSConfig,
+	}
+
+	netDialTimeout = func(network, address string, d time.Duration) (net.Conn, error) {
+		if network != "tcp" {
+			t.Errorf("Invalid network, got %q, want tcp", network)
+		}
+		if address != testClient.addr {
+			t.Errorf("Invalid address, got %q, want %q",
+				address, testClient.addr)
+		}
+		return testConn, nil
+	}
+
+	tlsClient = func(conn net.Conn, config *tls.Config) *tls.Conn {
+		if conn != testConn {
+			t.Errorf("Invalid conn, got %#v, want %#v", conn, testConn)
+		}
+		assertConfig(t, config, testClient.config)
+		return testTLSConn
+	}
+
+	smtpNewClient = func(conn net.Conn, host string) (smtpClient, error) {
+		if host != testHost {
+			t.Errorf("Invalid host, got %q, want %q", host, testHost)
+		}
+		return testClient, nil
+	}
+
+	if err := d.DialAndSend(getTestMessage()); err != nil {
+		t.Error(err)
 	}
 }
