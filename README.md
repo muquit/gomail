@@ -1,8 +1,8 @@
 # Gomail Fork
 
 This is a fork of https://github.com/go-gomail/gomail. But the project is not
-maintained anymore. I maintain this fork for
-https://github.com/muquit/mailsend-go. The branch add-xoauth2-support has 
+maintained anymore. I maintain this fork for my
+https://github.com/muquit/mailsend-go program. The branch add-xoauth2-support has 
 SMTP XOAUTH2 support and will be merged with main when I get some time.
 
 https://muquit.com/
