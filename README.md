@@ -1,5 +1,13 @@
 # Gomail
-[![Build Status](https://travis-ci.org/go-gomail/gomail.svg?branch=v2)](https://travis-ci.org/go-gomail/gomail) [![Code Coverage](http://gocover.io/_badge/gopkg.in/gomail.v2)](http://gocover.io/gopkg.in/gomail.v2) [![Documentation](https://godoc.org/gopkg.in/gomail.v2?status.svg)](https://godoc.org/gopkg.in/gomail.v2)
+
+This is a fork of https://github.com/go-gomail/gomail. But the project is not
+maintained anymore. I main this fork for
+https://github.com/muquit/mailsend-go. The branch add-xoauth2-support has 
+SMTP XOAUTH2 support and will be merged with main when I get some time.
+
+---  
+https://muquit.com/
+
 
 ## Introduction
 
