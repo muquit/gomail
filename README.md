@@ -1,4 +1,4 @@
-# Gomail
+# Gomail Fork
 
 This is a fork of https://github.com/go-gomail/gomail. But the project is not
 maintained anymore. I maintain this fork for
