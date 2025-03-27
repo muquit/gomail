@@ -6,7 +6,9 @@ https://github.com/muquit/mailsend-go program.
 
 ## Changes
 
-- SMTP XOAUTH2 support is added (Mar-26-2025)
+- Added go module support
+- SMTP XOAUTH2 support is added  
+  (Mar-26-2025)
 
 - https://muquit.com/
 
