@@ -2,13 +2,15 @@
 
 This is a fork of https://github.com/go-gomail/gomail. But the project is not
 maintained anymore. I maintain this fork for my
-https://github.com/muquit/mailsend-go program. The branch add-xoauth2-support has 
-SMTP XOAUTH2 support and will be merged with main when I get some time.
+https://github.com/muquit/mailsend-go program.
 
-https://muquit.com/
+## Changes
 
----  
+- SMTP XOAUTH2 support is added (Mar-26-2025)
 
+- https://muquit.com/
+
+---
 
 ## Introduction
 
@@ -24,10 +26,10 @@ there will never be backward incompatible changes within each version.
 
 It requires Go 1.2 or newer. With Go 1.5, no external dependencies are used.
 
-
 ## Features
 
 Gomail supports:
+
 - Attachments
 - Embedded images
 - HTML and text templates
@@ -35,21 +37,17 @@ Gomail supports:
 - SSL and TLS
 - Sending multiple emails with the same SMTP connection
 
-
 ## Documentation
 
 https://godoc.org/gopkg.in/gomail.v2
-
 
 ## Download
 
     go get gopkg.in/gomail.v2
 
-
 ## Examples
 
 See the [examples in the documentation](https://godoc.org/gopkg.in/gomail.v2#example-package).
-
 
 ## FAQ
 
@@ -77,22 +75,18 @@ bypass the verification of the server's certificate chain and host name by using
 
 Note, however, that this is insecure and should not be used in production.
 
-
 ## Contribute
 
 Contributions are more than welcome! See [CONTRIBUTING.md](CONTRIBUTING.md) for
 more info.
 
-
 ## Change log
 
 See [CHANGELOG.md](CHANGELOG.md).
 
-
 ## License
 
 [MIT](LICENSE)
-
 
 ## Contact
 
