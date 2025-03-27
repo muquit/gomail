@@ -12,6 +12,8 @@ https://github.com/muquit/mailsend-go program.
 
 - https://muquit.com/
 
+Updated: Mar-26-2025 
+
 ---
 
 ## Introduction
