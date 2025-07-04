@@ -1,20 +1,32 @@
 # Gomail Fork
 
-This is a fork of https://github.com/go-gomail/gomail. But the project is not
-maintained anymore. I maintain this fork for my
-https://github.com/muquit/mailsend-go program.
+This is a fork of https://github.com/go-gomail/gomail. The original 
+project is no longer maintained. I maintain this fork for my
+[mailsend-go](https://github.com/muquit/mailsend-go) program.
 
 ## Changes
 
 - Added go module support
-- SMTP XOAUTH2 support is added  
-  (Mar-26-2025)
+- **SMTP XOAUTH2 support is added** (Mar-26-2025)
 
 - https://muquit.com/
 
-Updated: Mar-26-2025 
+## Usage
+To use this fork in your code:
+
+```bash
+go get github.com/muquit/gomail@master
+go mod tidy
+```
+## Examples
+- See [OAuth2 test example](cmd/xauth2test/test_xoauth2_gmail.go) for SMTP XOAUTH2 usage
+
+- See [mailsend-go](https://github.com/muquit/mailsend-go) for real-world
+implementation
 
 ---
+
+**Original README content is below**
 
 ## Introduction
 
